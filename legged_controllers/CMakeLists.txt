@@ -71,19 +71,12 @@ add_executable(legged_target_trajectories_publisher
 add_executable(figure_eight_vel
         src/figure_eight_vel.cpp
         )
-add_executable(figure_eight_loc
-src/figure_eight_loc.cpp
-)
 
 add_dependencies(legged_target_trajectories_publisher
         ${PROJECT_NAME}
         ${catkin_EXPORTED_TARGETS}
         )
 add_dependencies(figure_eight_vel
-${PROJECT_NAME}
-${catkin_EXPORTED_TARGETS}
-)
-add_dependencies(figure_eight_loc
 ${PROJECT_NAME}
 ${catkin_EXPORTED_TARGETS}
 )
@@ -95,9 +88,6 @@ target_link_libraries(legged_target_trajectories_publisher
 target_link_libraries(figure_eight_vel
         ${PROJECT_NAME}
         ${catkin_LIBRARIES})
-target_link_libraries(figure_eight_loc
-${PROJECT_NAME}
-${catkin_LIBRARIES})
 
 target_compile_options(legged_target_trajectories_publisher PRIVATE ${OCS2_CXX_FLAGS})
 
