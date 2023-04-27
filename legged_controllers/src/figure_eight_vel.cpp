@@ -7,7 +7,7 @@
 #include <ostream>
 
 ros::Publisher cmd_vel_pub;
-ros::Time time_start;
+// ros::Time time_start;
 const double EPSILON = 1e-2;
 int flag = 1;
 int laps = 0;
@@ -17,8 +17,8 @@ void OdomStateCallback(const nav_msgs::Odometry::ConstPtr& msg)
 {   
     if (laps == 2)
     {   
-        ros::Duration time_duration = ros::Time::now() - time_start;    
-        ROS_INFO("Time cost: %f seconds", time_duration.toSec()); // not accurate; better to use the info from ROS_INFO time stamp
+        // ros::Duration time_duration = ros::Time::now() - time_start;    
+        // ROS_INFO("Time cost: %f seconds", time_duration.toSec()); // not accurate; better to use the info from ROS_INFO time stamp
         ROS_INFO("Total power consumption: %f W", power_summation);   
         ros::shutdown();
     }
@@ -86,7 +86,7 @@ int main(int argc, char **argv)
     ros::Subscriber sub1 = nh.subscribe("/odom", 1, OdomStateCallback);
     ros::Subscriber sub2 = nh.subscribe("/joint_states", 1000, JointStateCallback);
 
-    ros::Time time_start = ros::Time ::now();
+    // ros::Time time_start = ros::Time ::now();
     cmd_vel_pub = nh.advertise<geometry_msgs::Twist>("/cmd_vel", 1);
     ros::spin();
 
