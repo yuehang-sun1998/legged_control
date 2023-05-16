@@ -9,22 +9,26 @@
 ros::Publisher cmd_vel_pub;
 // ros::Time time_start;
 const double EPSILON = 1e-2;
+double pi = M_PI;   
 int flag = 1;
 int laps = 0;
+int counter = 0; 
+int sample_rate = 50;
 double power_summation = 0; 
+double r = 2.0;
+double v = 0.6; 
+double omega = v / r;
+int counter_lim = int(4 * pi / omega * sample_rate) + 10;
 
 void OdomStateCallback(const nav_msgs::Odometry::ConstPtr& msg)
 {   
-    if (laps == 2)
-    {   
+    if (laps == 2 || counter > counter_lim)
+    {   ROS_INFO("%d, %d", counter_lim, counter);
         // ros::Duration time_duration = ros::Time::now() - time_start;    
         // ROS_INFO("Time cost: %f seconds", time_duration.toSec()); // not accurate; better to use the info from ROS_INFO time stamp
         ROS_INFO("Total power consumption: %f W", power_summation);   
         ros::shutdown();
     }
-    double r = 2;
-    double v = 0.4;
-    double omega = v / r;
     double roll, pitch, yaw;
 
     double x = msg->pose.pose.position.x;
@@ -64,6 +68,7 @@ void OdomStateCallback(const nav_msgs::Odometry::ConstPtr& msg)
     cmd_vel_pub.publish(twist_msg);
     // ROS_INFO("Current yaw: %f and Current lap: %d", yaw, laps);
     ROS_INFO("Current position: (%f, %f, %f).", x, y, z);
+    counter++;
 }
 
 void JointStateCallback(const sensor_msgs::JointState::ConstPtr& msg)
@@ -80,15 +85,21 @@ void JointStateCallback(const sensor_msgs::JointState::ConstPtr& msg)
 
 int main(int argc, char **argv)
 {
-    double pi = M_PI;   
     ros::init(argc, argv, "figure_eight_and_joint_torque_reader");
     ros::NodeHandle nh;
     ros::Subscriber sub1 = nh.subscribe("/odom", 1, OdomStateCallback);
     ros::Subscriber sub2 = nh.subscribe("/joint_states", 1000, JointStateCallback);
+    ros::Rate rate(sample_rate);
 
-    // ros::Time time_start = ros::Time ::now();
     cmd_vel_pub = nh.advertise<geometry_msgs::Twist>("/cmd_vel", 1);
-    ros::spin();
+    
+    while (ros::ok())
+    {
+        ros::spinOnce();
+        rate.sleep();
+    }
+    // ros::Time time_start = ros::Time ::now();
+    // ros::spin();
 
     return 0;
 }
