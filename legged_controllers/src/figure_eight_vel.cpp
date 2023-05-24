@@ -8,7 +8,7 @@
 
 ros::Publisher cmd_vel_pub;
 // ros::Time time_start;
-const double EPSILON = 1e-2;
+const double EPSILON = 5e-2;
 double pi = M_PI;   
 int flag = 1;
 int laps = 0;
@@ -23,7 +23,8 @@ int counter_lim = int(4 * pi / omega * sample_rate) + 10;
 void OdomStateCallback(const nav_msgs::Odometry::ConstPtr& msg)
 {   
     if (laps == 2 || counter > counter_lim)
-    {   ROS_INFO("%d, %d", counter_lim, counter);
+    {   
+        // ROS_INFO("%d, %d", counter_lim, counter);
         // ros::Duration time_duration = ros::Time::now() - time_start;    
         // ROS_INFO("Time cost: %f seconds", time_duration.toSec()); // not accurate; better to use the info from ROS_INFO time stamp
         ROS_INFO("Total power consumption: %f W", power_summation);   
